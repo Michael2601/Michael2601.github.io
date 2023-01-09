@@ -1,0 +1,189 @@
+* {
+  box-sizing: border-box;
+}
+
+html, body {
+  height: 100%;
+}
+
+body {
+  font-family: monospace;
+  margin: 0;
+  display: flex;
+  justify-content: center;
+}
+
+h3 {
+  margin: 2%;
+}
+
+table {
+  border-collapse: collapse;
+}
+
+table, th, td {
+  border: 1px solid black;
+}
+
+th, td {
+  padding: 1px;
+  text-align: left;
+}
+
+button {
+  font-family: monospace;
+}
+
+b {
+  padding-left: 5px;
+}
+
+.btn {
+  margin: 5px;
+}
+
+#canvasHolder {
+  width: 66.7%;
+}
+
+#configurationHolder {
+  width: 33.3%;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  border-left: 1px solid #c8c7c7;
+}
+
+#configuration {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+}
+
+#configFooter {
+  overflow: hidden;
+  background-color: #fff;
+  flex: 0 1 40px;
+  border-top: 1px solid #c8c7c7;
+}
+
+#input {
+  flex: 1 1 auto;
+  display: flex;
+  flex-flow: column;
+  height: 100%;
+  overflow: auto;
+}
+
+.graphInput {
+  margin-top: 5px;
+  margin-left: 5px;
+}
+
+#randomiseVerticesCount {
+  width: 95%;
+}
+
+#saveEuclideanFileName {
+  width: 95%;
+}
+
+#minNonEuclideanDistance {
+  width: 95%;
+}
+
+#maxNonEuclideanDistance {
+  width: 95%;
+}
+
+#vertexCount {
+  width: 95%;
+}
+
+#algorithmButtonsContainer {
+  padding-bottom: 5px;
+  border-bottom: solid 1px #c8c7c7;
+}
+
+.column2 {
+  display: grid;
+  grid-template-columns: 50% 50%;
+  padding-bottom: 5px;
+}
+
+.algorithmButton {
+  margin: 5px 5px 5px 5px;
+}
+
+.distanceMatrixWrapperEuc {
+  overflow: auto;
+  width: 90%;
+  margin: auto;
+  flex-grow : 1;
+  max-height: 45vh;
+}
+
+.distanceMatrixWrapperNonEuc {
+  overflow: auto;
+  width: 90%;
+  margin: auto;
+  flex-grow : 1;
+  max-height: 42vh;
+}
+
+#stepLog {
+  height: 100px;
+  overflow: auto;
+  border: 1px solid;
+  margin: 5px 5px 5px 5px;
+}
+
+#pseudocode {
+  white-space: pre-wrap;
+  margin: 0 5px 5px 5px;
+  font-family: monospace;
+}
+
+#animationControls {
+  display: grid;
+  grid-template-columns: 20% 20% 20% 20% 20%;
+  padding-left: 5px;
+  padding-bottom: 5px;
+}
+
+#output {
+  height: inherit;
+  overflow: auto;
+}
+
+#results {
+  padding: 5px;
+  overflow: auto;
+  width: 100%;
+  flex-grow : 1;
+  max-height: 85vh;
+}
+
+.result {
+  padding-bottom: 5px;
+}
+
+.showTourButtonWrapper {
+  text-align: center;
+}
+
+#mouseCoords {
+  padding-left: 5px;
+  padding-top: 5px;
+}
+
+#mouseCoordsX {
+  padding-right: 5px;
+  display: inline;
+  float: left;
+}
+
+.animationControl {
+  margin: 0 5px 5px 5px;
+}
