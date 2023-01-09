@@ -1,0 +1,194 @@
+<!DOCTYPE html>
+
+<html lang="en">
+<meta charset="utf-8"/>
+
+<head>
+  <title>Коммивояжёр</title>
+  <link id="favicon" rel="shortcut icon" href="assets/favicons/favicon0.ico" />
+
+  <link rel="stylesheet" href="./src/css/styles.css">
+
+  <script src="./src/js/p5/p5.min.js"></script>
+  <script src="./src/js/p5/p5.dom.min.js"></script>
+
+  <script src="./src/js/javascript-lp-solver/src/solver.js"></script>
+
+  <link rel="stylesheet" href="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/css/bootstrap.min.css">
+  <script src="https://ajax.googleapis.com/ajax/libs/jquery/3.3.1/jquery.min.js"></script>
+  <script src="https://maxcdn.bootstrapcdn.com/bootstrap/3.4.0/js/bootstrap.min.js"></script>
+
+  <script src="./src/js/canvas.js"></script>
+  <script src="./src/js/animationSteps.js"></script>
+  <script src="./src/js/min_span_tree.js"></script>
+  <script src="./src/js/file_processing.js"></script>
+
+  <script src="./src/js/nearest_neighbour.js"></script>
+  <script src="./src/js/branch_and_bound.js"></script>
+  <script src="./src/js/brute_force.js"></script>
+  <script src="./src/js/approx_min_span_tree.js"></script>
+  <script src="./src/js/christofides.js"></script>
+  <script src="./src/js/integer_programming_dfj.js"></script>
+  <script src="./src/js/integer_programming_mtz.js"></script>
+
+  <script src="./src/js/visualisation.js"></script>
+</head>
+
+<body>
+  <div id="canvasHolder"></div>
+
+  <div id="configurationHolder">
+
+    <ul class="nav nav-tabs nav-justified">
+      <li class="dropdown active">
+        <a class="dropdown-toggle" data-toggle="dropdown" href="#graph" onclick="openTab(event, 'input')">Граф<span class="caret"></span></a>
+        <ul class="dropdown-menu">
+          <li><a data-toggle="tab" href="#graphEuclidean" onclick="changeSpace(event, 'euclidean')">Евклидово пространство</a></li>
+          <li><a data-toggle="tab" href="#graphNonEuclidean" onclick="changeSpace(event, 'nonEuclidean')">Неевклидово пространство</a></li>
+        </ul>
+      </li>
+      <li>
+        <a class="solve-tab-btn" data-toggle="tab" href="#solve" onclick="openTab(event, 'algorithms')">Алгоритмы</a>
+      </li>
+      <li>
+        <a class="result-tab-btn" data-toggle="tab" href="#result" onclick="openTab(event, 'output')">Результаты</a>
+      </li>
+    </ul>
+
+    <div id="configuration">
+
+      <div class="tab-content">
+
+        <div id="graphEuclidean" class="tab-pane fade in active">
+          <div id="mouseCoords">
+            <div id="mouseCoordsX">X: 0</div>
+            <div id="mouseCoordsY">Y: 0</div>
+          </div>
+
+          <b>Расстановка вершин</b>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="randomiseVerticesCount" min="3" step="1" placeholder="Количество вершин">
+            <button class="btn btn-primary" onclick="randomiseVertices()">Расставить</button>
+          </div>
+
+          <b>Импорт графа</b>
+          <div>
+            <input type="file" name="file" class="graphInput" id="importInstanceEuc" onchange="readFile(event)" enctype="multipart/form-data" />
+          </div>
+
+          <b>Экспорт графа</b>
+          <div class="column2">
+            <input type="text" class="form-control graphInput" id="saveEuclideanFileName" placeholder="Имя файла">
+            <button class="btn btn-primary" onclick="saveInstance()">Скачать</button>
+          </div>
+
+          <b>Удаление вершин</b>
+          <div class="column2">
+            <button class="btn btn-danger" id="deleteSelectedVertexBtn" onclick="deleteSelectedVertex()">Удалить выбранные</button>
+            <button class="btn btn-danger" id="deleteAllVerticesBtn" onclick="deleteAllVertices()">Удалить все</button>
+          </div>
+
+          <b>Матрица</b>
+          <div class="distanceMatrixWrapperEuc">
+            <table id="distanceMatrixEuclidean"></table>
+          </div>
+        </div>
+
+        <div id="graphNonEuclidean" class="tab-pane fade">
+
+          <b>Смена количества вершин</b>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="vertexCount" onchange="changeVertexCount(-1)" placeholder="Количество вершин" min="3">
+          </div>
+
+          <b>Случайная смена расстояний</b>
+          <div class="column2">
+            <input type="number" class="form-control graphInput" id="minNonEuclideanDistance" placeholder="Минимальное расстояние" min="1">
+            <input type="number" class="form-control graphInput" id="maxNonEuclideanDistance" placeholder="Максимальное расстояние" min="1">
+          </div>
+          <div class="column2">
+            <button class="btn btn-primary" id="randomiseNonEuclideanDistances" onclick="randomiseNonEuclideanDistances()">Сменить</button>
+          </div>
+
+          <b>Импорт графа</b>
+          <input type="file" class="graphInput" name="file" onchange="readFile(event)" enctype="multipart/form-data" />
+
+          <b>Экспорт графа</b>
+          <div class="column2">
+            <input type="text" class="graphInput" id="saveNonEuclideanFileName" placeholder="Имя файла">
+            <button class="btn btn-primary" onclick="saveInstance()">Скачать</button>
+          </div>
+
+          <b>Матрица</b>
+          <div class="distanceMatrixWrapperNonEuc">
+            <table id="distanceMatrixNonEuclidean"></table>
+          </div>
+        </div>
+
+        <div id="solve" class="tab-pane fade">
+
+          <div id="algorithmButtonsContainer">
+            <b>Алгоритмы точного поиска</b>
+            <div class="column2">
+              <button type="button" class="btn btn-primary" onclick="solveWithBruteForce();">Полный перебор</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithBranchAndBound();">Алгоритм ветвей и границ</button>
+            </div>
+
+            <b>Приближёённые алгоритмы</b>
+            <div class="column1">
+              <button type="button" class="btn btn-primary" onclick="solveWithNearestNeighbour();">Алгоритм ближайшего соседа</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithApproxMinSpanTree();">Алгоритм минимального оставного дерева</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithChristofides();">Алгоритм Кристофайдеса</button>
+            </div>
+
+            <b>Алгоритмы линейного программирования</b>
+            <div class="column2"> 
+              <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingDFJ();">Алгоритм Д-Ф-Д</button>
+              <button type="button" class="btn btn-primary" onclick="solveWithIntegerProgrammingMTZ();">Алгоритм М-Т-З</button>
+            </div>
+          </div>
+
+          <div>
+            <span id="currentAlgorithm">&nbsp;</span>
+            <span id="stepCounter" hidden>
+              <span>Шаг</span>
+              <span id="currentStep"></span>
+              <span>/</span>
+              <span id="totalSteps"></span>
+            </span>
+          </div>
+
+          <div id="stepLog"></div>
+
+          <div class="btn-group" id="animationControls">
+            <button disabled type="button" class="btn btn-secondary back-step-btn" onclick="restartAnimation()"><span class="glyphicon glyphicon-fast-backward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary back-step-btn" onclick="pressStepBackward()"><span class="glyphicon glyphicon-step-backward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="togglePauseAnimation()"><span class="glyphicon glyphicon-play" id="play-pause-btn-span" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="pressStepForward()"><span class="glyphicon glyphicon-step-forward" aria-hidden="true"></span></button>
+            <button disabled type="button" class="btn btn-secondary forward-step-btn" onclick="endAnimation()"><span class="glyphicon glyphicon-fast-forward" aria-hidden="true"></span></button>
+          </div>
+
+          <div id="pseudocode"></div>
+
+        </div>
+
+        <div id="result" class="tab-pane fade">
+          <div id="results">
+          </div>
+        </div>
+      </div>
+    </div>
+
+    <div id="configFooter">
+      Показывать имена вершин:
+      <select id="changeShowLabelsSelect" onchange="changeShowLabels()">
+        <option value="never">Никогда</option>
+        <option id="defaultLabelOption" value="onHover" selected>При наведении</option>
+        <option value="always">Всегда</option>
+      </select>
+    </div>
+  </div>
+
+</body>
+
+</html>
